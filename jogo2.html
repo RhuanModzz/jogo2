@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Velha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border: 2px solid #333;
+            font-size: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Jogo da Velha</h1>
+        <div class="board" id="board">
+            <!-- Células do jogo -->
+            <div class="cell" onclick="makeMove(0)"></div>
+            <div class="cell" onclick="makeMove(1)"></div>
+            <div class="cell" onclick="makeMove(2)"></div>
+            <div class="cell" onclick="makeMove(3)"></div>
+            <div class="cell" onclick="makeMove(4)"></div>
+            <div class="cell" onclick="makeMove(5)"></div>
+            <div class="cell" onclick="makeMove(6)"></div>
+            <div class="cell" onclick="makeMove(7)"></div>
+            <div class="cell" onclick="makeMove(8)"></div>
+        </div>
+        <div id="message" class="message"></div>
+        <button onclick="resetGame()">Reiniciar Jogo</button>
+    </div>
+
+    <script>
+        let board = ['', '', '', '', '', '', '', '', '']; // Representa as 9 células do tabuleiro
+        let currentPlayer = 'X'; // Começa com o jogador X
+        let gameOver = false;
+
+        function makeMove(index) {
+            if (gameOver || board[index] !== '') return; // Se o jogo acabou ou a célula já foi preenchida, não faz nada
+
+            // Preenche a célula com o símbolo do jogador atual
+            board[index] = currentPlayer;
+            document.getElementsByClassName('cell')[index].innerText = currentPlayer;
+
+            // Verifica se o jogador atual venceu
+            if (checkWinner(currentPlayer)) {
+                document.getElementById('message').innerText = `Jogador ${currentPlayer} venceu!`;
+                gameOver = true;
+                return;
+            }
+
+            // Verifica se houve empate
+            if (board.every(cell => cell !== '')) {
+                document.getElementById('message').innerText = "Empate!";
+                gameOver = true;
+                return;
+            }
+
+            // Troca de jogador
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+
+        function checkWinner(player) {
+            const winningCombination = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            return winningCombination.some(combination => 
+                combination.every(index => board[index] === player)
+            );
+        }
+
+        function resetGame() {
+            board = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            gameOver = false;
+            document.getElementById('message').innerText = '';
+            const cells = document.getElementsByClassName('cell');
+            for (let i = 0; i < cells.length; i++) {
+                cells[i].innerText = '';
+            }
+        }
+    </script>
+</body>
+</html>
